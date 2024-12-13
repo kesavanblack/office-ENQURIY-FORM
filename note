@@ -1,0 +1,122 @@
+python-office-enquiry-form
+Flask Excel Storage Application Flask Excel Storage Application
+
+This project is a Flask-based web application for collecting user data via an HTML form, storing the data in an Excel file, and providing functionality to view and export the stored data.
+
+Features
+
+Form Submission:
+
+Collect user details like Name, Age, Email, etc.
+
+Validate user input (e.g., ensuring Age is a positive number and Email is valid).
+
+Data Storage:
+
+Data is stored in an Excel file (primary_storage.xlsx).
+
+Automatically creates the file with predefined columns if it does not exist.
+
+Data Export:
+
+Provides a route to download the stored data as an Excel file.
+
+Data View:
+
+Displays the stored data in an HTML table.
+
+Project Structure
+
+project/ ├── app.py # Main application file ├── primary_storage.xlsx # Excel file for storing data (created automatically if missing) ├── templates/ │ └── index.html # HTML form for user input └── static/ # Optional folder for CSS/JS (not used in this example)
+
+Routes
+
+/ (GET)
+
+Displays the form for user input.
+
+Template: index.html
+
+/submit (POST)
+
+Collects form data and appends it to primary_storage.xlsx.
+
+Validates the following:
+
+Age must be a positive number.
+
+Email must contain "@".
+
+Redirects back to the form after submission.
+
+/export (GET)
+
+Exports the stored data from primary_storage.xlsx as an Excel file.
+
+File is dynamically created and sent to the user for download.
+
+/view (GET)
+
+Displays the stored data in an HTML table.
+
+Data is read from primary_storage.xlsx and rendered dynamically.
+
+Setup Instructions
+
+Install Dependencies:
+
+pip install flask pandas openpyxl
+
+Run the Application:
+
+python app.py
+
+Access the Application:
+
+Open a web browser and navigate to:
+
+Form: http://127.0.0.1:5000/
+
+View Data: http://127.0.0.1:5000/view
+
+Export Data: http://127.0.0.1:5000/export
+
+Validation Rules
+
+Age:
+
+Must be a positive integer.
+
+Invalid input returns a 400 error with the message "Invalid Age".
+
+Email:
+
+Must contain the @ character.
+
+Invalid input returns a 400 error with the message "Invalid Email".
+
+Code Highlights
+
+Ensure Excel File Exists
+
+if not os.path.exists(PRIMARY_EXCEL_FILE): columns = ["Name", "Age", "Sex", "DOB", "Email", "Mobile", "Address", "College Name", "Degree", "Year of Pass Out", "Technical Skills", "Areas of Interest", "Category of Position", "Requirements"] df = pd.DataFrame(columns=columns) df.to_excel(PRIMARY_EXCEL_FILE, index=False)
+
+Append Data to Excel File
+
+df = pd.read_excel(PRIMARY_EXCEL_FILE) df = pd.concat([df, pd.DataFrame([form_data])], ignore_index=True) df.to_excel(PRIMARY_EXCEL_FILE, index=False)
+
+Export Data as Excel
+
+output = BytesIO() df.to_excel(output, index=False) output.seek(0) return send_file(output, download_name="enquiry_data.xlsx", as_attachment=True)
+
+Future Enhancements
+
+Add pagination for the /view route.
+
+Integrate advanced validation with libraries like WTForms.
+
+Include more user-friendly error messages.
+
+Add styling to improve the user interface.
+
+Developed using Flask and Pandas for efficient data management and export functionality.
